@@ -21,6 +21,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/campsites', campsiteRouter);
+app.use('/promotions',promotionRouter);
+app.use('/partners', partnerRouter);
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
