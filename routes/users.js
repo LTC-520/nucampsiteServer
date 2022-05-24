@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/signup',(req, res, next)=>{
-  User.findOnce({username: req.body.username})// finds if any username is already taken
+  User.findOne({username: req.body.username})// finds if any username is already taken
   .then(user =>{
     if (user){
       const err = new Error(`User ${req.body.username} already exists!`);
@@ -69,16 +69,20 @@ router.post('/login', (req, res ,next)=>{
   }
 });
 
-router.get('/logout', (req, res, next)=>{
-  if(req.session){
-    req.session.destroy(); // deletes session file on the server side, if client tries to authenticate using the session id it will not be recognized as valid
-    res.clearCookie('session-id');
-    res.redirect('/');
-  }else{
-    const err = new Error('You are not logged in!');
-    err.status = 401;
-    return next(err)
+router.get('/logout', (req, res, next) => {
+  if (req.session) {
+      req.session.destroy();    // deletes session file on the server side, if client tries to authenticate using the session id it will not be recognized as valid
+      res.clearCookie('session-id');
+      res.redirect('/');
+  } else {
+      const err = new Error('You are not logged in!');
+      err.status = 401;
+      return next(err);
   }
-});
+});                                                                                 
+    
+    
+
+
 
 module.exports = router;
