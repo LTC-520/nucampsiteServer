@@ -18,7 +18,7 @@ const connect = mongoose.connect(url, {
   useUnifiedTopology: true
 });
 
-const session = require(express-session);
+const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 
 connect.then(() => console.log('Connected correctly to server'),
@@ -59,7 +59,7 @@ function auth(req, res, next) {
     const user = auth[0];
     const pass = auth[1];
     if (user === 'admin' && pass === 'password') {
-      res.session.user = 'admin'; //saving this session that the username is "admin"
+      req.session.user = 'admin'; //saving this session that the username is "admin"
       return next(); //authorized
     } else {
       const err = new Error('You are not authenticated');
