@@ -1,16 +1,19 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+
+const passport = require('passport')
+const config = require('./config')
+
 
 const campsiteRouter = require('./routes/campsiteRouter');
 const promotionRouter = require('./routes/promotionRouter');
 const partnerRouter = require('./routes/partnerRouter');
 const mongoose = require('mongoose');
-const url = 'mongodb://localhost:27017/nucampsite';
+const url = config.mongoUrl
 const connect = mongoose.connect(url, {
   useCreateIndex: true,
   useFindAndModify: false,
@@ -18,11 +21,7 @@ const connect = mongoose.connect(url, {
   useUnifiedTopology: true
 });
 
-const session = require('express-session');
-const FileStore = require('session-file-store')(session);
 
-const passport = require('passport')
-const authenticate = require('./authenticate')
 
 connect.then(() => console.log('Connected correctly to server'),
   err => console.log(err)
@@ -40,33 +39,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 //app.use(cookieParser('12345-67890-09876-54321'));
 
-app.use(session({
-  name: 'session-id',
-  secret: '12345-67890-09876-54321',
-  saveUninitialized: false, // when a new session is created & not updates are done, it won't be saved at the end of the sessions
-  resave: false, //once a session is created, updated and saved, it will continue to be resaved whenever a request is made to the session
-  store: new FileStore() //creates a new file store as an object which saves the sessions information to a hard disk instead of the apps memory
-}));
-
 app.use(passport.initialize());
-app.use(passport.session());
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-function auth(req, res, next) {
-  console.log(req.user)
-  if (!req.user) {
-      const err = new Error('you are not authenticated');
-      err.status = 401;
-      return next(err);
-  } else {
-      return next();
-    }
-  }
-
-
-app.use(auth)
 
 app.use(express.static(path.join(__dirname, 'public')));
 
