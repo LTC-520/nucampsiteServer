@@ -21,6 +21,9 @@ const connect = mongoose.connect(url, {
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 
+const passport = require('passport')
+const authenticate = require('./authenticate')
+
 connect.then(() => console.log('Connected correctly to server'),
   err => console.log(err)
 );
@@ -45,25 +48,23 @@ app.use(session({
   store: new FileStore() //creates a new file store as an object which saves the sessions information to a hard disk instead of the apps memory
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 function auth(req, res, next) {
-  console.log(req.session)
-  if (!req.session.user) {
+  console.log(req.user)
+  if (!req.user) {
       const err = new Error('you are not authenticated');
       err.status = 401;
       return next(err);
   } else {
-    if (req.session.user === 'authenticated') {
       return next();
-    } else {
-      const err = new Error('You are not authenticated!');
-      err.status = 401;
-      return next(err)
     }
   }
-}
+
 
 app.use(auth)
 
