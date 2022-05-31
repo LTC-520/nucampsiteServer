@@ -3,17 +3,18 @@ var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const usersRouter = require('./routes/users');
 
 const passport = require('passport')
 const config = require('./config')
+const url = config.mongoUrl
 
 
 const campsiteRouter = require('./routes/campsiteRouter');
 const promotionRouter = require('./routes/promotionRouter');
 const partnerRouter = require('./routes/partnerRouter');
 const mongoose = require('mongoose');
-const url = config.mongoUrl
+
 const connect = mongoose.connect(url, {
   useCreateIndex: true,
   useFindAndModify: false,
