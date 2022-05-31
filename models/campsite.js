@@ -16,9 +16,10 @@ const commentSchema = new Schema({
         required: true
     },
     author: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId, // instead of storing a string we're storing a reference to a user document through ObjectId
+        ref: 'User' // holds the name of the model of the doc
     }
+
 }, {
     timestamps: true
 });
@@ -33,20 +34,20 @@ const campsiteSchema = new Schema({
         type: String,
         required: true
     },
-    image:{
+    image: {
         type: String,
         required: true
     },
-    elevation:{
+    elevation: {
         type: Number,
         required: true,
     },
-    cost:{
+    cost: {
         type: Currency,
         required: true,
         min: 0
     },
-    featured:{
+    featured: {
         type: Boolean,
         default: false
     },
